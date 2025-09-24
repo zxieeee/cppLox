@@ -13,13 +13,13 @@ void run(std::string_view content) {
 }
 
 void runPrompt() {
-
   for (;;) {
     std::cout << "> ";
     std::string line;
     if (!std::getline(std::cin, line))
       break;
     run(line);
+    hadError = false;
   }
 }
 
@@ -42,14 +42,9 @@ std::string readFile(std::string_view path) {
 void runFile(std::string_view path) {
   std::string bytes = readFile(path);
   run(bytes);
+  if (hadError)
+    std::exit(65);
 }
-
-void report(int line, std::string_view where, std::string_view message) {
-  std::cerr << "[line " << line << "] Error" << where << ": " << message
-            << "\n";
-  bool hadError = true;
-}
-void error(int line, std::string_view message) { report(line, "", message); }
 
 int main(int argc, char *argv[]) {
   if (argc > 2) {
